@@ -13,7 +13,11 @@ import java.util.UUID;
 
 @Repository
 public interface UserQuestRepository extends JpaRepository<UserQuest, Long> {
-    Optional<UserQuest> findByUserAndQuest_CategoryAndQuest_DateOfExpiryIsAfter(User user, PartnerCategory category, LocalDate spendPeriod);
+    Optional<UserQuest> findByUserAndQuest_CategoryAndQuest_DateOfExpiryIsAfter(
+            User user,
+            PartnerCategory category,
+            LocalDate spendPeriod
+    );
 
     List<UserQuest> findAllByUser_Uuid(UUID userUuid);
 }

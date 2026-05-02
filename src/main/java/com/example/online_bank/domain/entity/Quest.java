@@ -5,7 +5,11 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
+
+import static jakarta.persistence.FetchType.LAZY;
+import static jakarta.persistence.GenerationType.IDENTITY;
 
 @Entity
 @Table
@@ -16,7 +20,7 @@ import java.util.List;
 @Builder
 public class Quest {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = IDENTITY)
     private Long id;
     @Enumerated(EnumType.STRING)
     private PartnerCategory category;
@@ -25,9 +29,10 @@ public class Quest {
     @Column
     private Integer pointReward;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "quest")
+    @OneToMany(fetch = LAZY, mappedBy = "quest")
     @ToString.Exclude
-    private List<UserQuest> userQuest;
+    @Builder.Default
+    private List<UserQuest> userQuest = new ArrayList<>();
 
     @Column
     private Integer progress;

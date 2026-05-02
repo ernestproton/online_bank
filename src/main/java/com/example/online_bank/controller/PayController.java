@@ -21,7 +21,10 @@ public class PayController {
     private final PayService payService;
 
     @PostMapping
-    public ResponseEntity<OperationInfoDto> pay(@RequestBody PayDtoRequest dto, @AuthenticationPrincipal JwtUserDetails userDetails) {
+    public ResponseEntity<OperationInfoDto> pay(
+            @RequestBody PayDtoRequest dto,
+            @AuthenticationPrincipal JwtUserDetails userDetails
+    ) {
         OperationInfoDto body = payService.pay(dto, UUID.fromString(userDetails.getUuid()));
         return ResponseEntity.ok().body(body);
     }

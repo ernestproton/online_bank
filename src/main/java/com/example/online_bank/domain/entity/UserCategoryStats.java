@@ -7,6 +7,10 @@ import lombok.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
+import static jakarta.persistence.EnumType.STRING;
+import static jakarta.persistence.FetchType.LAZY;
+import static jakarta.persistence.GenerationType.IDENTITY;
+
 @Entity
 @Table
 @Getter
@@ -17,10 +21,10 @@ import java.time.LocalDate;
 @Builder
 public class UserCategoryStats {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = IDENTITY)
     private Long id;
 
-    @Enumerated(EnumType.STRING)
+    @Enumerated(STRING)
     private PartnerCategory category;
 
     @Column
@@ -32,7 +36,7 @@ public class UserCategoryStats {
     @Column
     private LocalDate spendPeriod;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     @ToString.Exclude
     private User user;

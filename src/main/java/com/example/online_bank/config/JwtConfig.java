@@ -14,19 +14,12 @@ import java.time.Duration;
 @Setter
 @ToString
 public class JwtConfig {
-    @NonNull
     private Duration accessTokenLifetime;
-    @NonNull
     private Duration refreshTokenLifetime;
-    @NonNull
     private Duration idTokenLifetime;
-    @NonNull
     private Duration notBefore;
-    @NonNull
     private String fileName;
-    @NonNull
     private String audience;
-    @NonNull
     private String issuer;
     private SecretKey key;
 }

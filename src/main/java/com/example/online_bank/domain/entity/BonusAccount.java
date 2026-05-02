@@ -5,6 +5,9 @@ import lombok.*;
 
 import java.math.BigDecimal;
 
+import static jakarta.persistence.CascadeType.ALL;
+import static jakarta.persistence.GenerationType.IDENTITY;
+
 @Entity
 @Table
 @Getter
@@ -15,13 +18,17 @@ import java.math.BigDecimal;
 @ToString
 public class BonusAccount {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = IDENTITY)
     private Long id;
 
     @Column
     private BigDecimal points;
 
     @JoinColumn(name = "account_id")
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = ALL)
     private Account account;
+
+    @JoinColumn(name = "user_id")
+    @ManyToOne
+    private User user;
 }

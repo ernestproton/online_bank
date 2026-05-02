@@ -5,9 +5,13 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
+import static jakarta.persistence.CascadeType.ALL;
 import static jakarta.persistence.EnumType.STRING;
+import static jakarta.persistence.FetchType.LAZY;
+import static jakarta.persistence.GenerationType.IDENTITY;
 
 /**
  * Номер счета (уникален), владелец (класс Пользователь этап1 пункт3), остаток на счете (с копейками).
@@ -21,7 +25,7 @@ import static jakarta.persistence.EnumType.STRING;
 @Setter
 public class Account {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = IDENTITY)
     private Long id;
 
     @Column
@@ -34,9 +38,10 @@ public class Account {
     @Enumerated(STRING)
     private CurrencyCode currencyCode;
 
-    @OneToMany(mappedBy = "account", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "account", fetch = LAZY)
     @ToString.Exclude
-    private List<Operation> operations;
+    @Builder.Default
+    private List<Operation> operations = new ArrayList<>();
 
     @Column()
     private Boolean isBlocked;
@@ -50,7 +55,7 @@ public class Account {
     @ToString.Exclude
     private BankPartner bankPartner;
 
-    @OneToOne(mappedBy = "account", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "account", cascade = ALL)
     @ToString.Exclude
     private BonusAccount bonusAccount;
 }

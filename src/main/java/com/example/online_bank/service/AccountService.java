@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.UUID;
 
 import static com.example.online_bank.util.CodeGeneratorUtil.generateAccountNumber;
+import static java.math.BigDecimal.ZERO;
 
 
 /**
@@ -47,11 +48,11 @@ public class AccountService {
                 .findFirst()
                 .orElseThrow(() -> new EntityNotFoundException("Переданный код валюты не найден"));
 
-        User user = userService.findByUuid(userUuid).<EntityNotFoundException>orElseThrow(EntityNotFoundException::new);
+        User user = userService.findByUuid(userUuid).orElseThrow(EntityNotFoundException::new);
 
         Account account = Account
                 .builder()
-                .balance(BigDecimal.ZERO)
+                .balance(ZERO)
                 .holder(user)
                 .accountNumber(generateAccountNumber(currencyCode))
                 .currencyCode(currencyCode)
@@ -59,8 +60,9 @@ public class AccountService {
                 .build();
         account.setBonusAccount(
                 BonusAccount.builder()
+                        .user(user)
                         .account(account)
-                        .points(BigDecimal.ZERO)
+                        .points(ZERO)
                         .build());
 
         accountRepository.save(account);
@@ -77,6 +79,7 @@ public class AccountService {
     public void depositMoney(String accountNumber, BigDecimal amount) {
         Account account = findByAccountNumber(accountNumber);
         account.setBalance(account.getBalance().add(amount));
+
     }
 
     /**

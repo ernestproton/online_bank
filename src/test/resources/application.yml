@@ -53,16 +53,17 @@ logging:
             bind: TRACE
 
 jwt:
-  lifetime: 15m
-  not-before: 1s
+  access-token-lifetime: 15m
+  refresh-token-lifetime: 30d
+  id-token-lifetime: 30d
+  not-before: 10s
+  filename: ${JWT_SECRET_FILE_NAME}
   audience: "online_bank audience"
   issuer: "com.example"
-  secret-file-name: test_secret_file
-  refresh-token-life-time: 30d
 
 app:
   cors:
     allowed-origins: ${CORS_URL}
 
 resend:
-  api-key: ${RESEND_API_KEY}
+  api-key: "RESEND_API_KEY"

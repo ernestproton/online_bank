@@ -1,0 +1,15 @@
+databaseChangeLog:
+  - changeSet:
+      id: 20260502210300_add_column_bonus_account.yaml
+      author: gilmanovamir
+      changes:
+        - addColumn:
+            tableName: bonus_account
+            columns:
+              - column:
+                  name: user_id
+                  type: bigint
+                  constraints:
+                    foreignKeyName: fk_bonus_account_user_bank
+                    referencedTableName: user_bank
+                    referencedColumnNames: id

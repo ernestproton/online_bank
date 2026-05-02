@@ -13,7 +13,9 @@ import java.util.Optional;
 public interface ExchangeCurrencyRepository extends JpaRepository<ExchangeRate, Long> {
 
     @Query("""
-            select e.rate from ExchangeRate e where e.baseCurrency = :baseCurrency and e.targetCurrency = :targetCurrency
+            select e.rate from ExchangeRate e
+                        where e.baseCurrency = :baseCurrency
+                                    and e.targetCurrency = :targetCurrency
             """)
     Optional<BigDecimal> findRateByBaseAndTargetCurrency(CurrencyCode baseCurrency, CurrencyCode targetCurrency);
 

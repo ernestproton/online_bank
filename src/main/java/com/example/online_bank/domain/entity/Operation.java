@@ -8,6 +8,7 @@ import lombok.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
+import static jakarta.persistence.EnumType.STRING;
 import static jakarta.persistence.GenerationType.IDENTITY;
 
 
@@ -30,7 +31,7 @@ public class Operation {
     private LocalDateTime createdAt;
 
     @Column
-    @Enumerated(EnumType.STRING)
+    @Enumerated(STRING)
     private OperationType operationType;
 
     @Column
@@ -40,7 +41,7 @@ public class Operation {
     private String description;
 
     @Column
-    @Enumerated(EnumType.STRING)
+    @Enumerated(STRING)
     private CurrencyCode currencyCode;
 
     @JoinColumn(name = "account_id", referencedColumnName = "id")

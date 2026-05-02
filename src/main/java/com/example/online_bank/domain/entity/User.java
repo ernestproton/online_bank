@@ -6,6 +6,7 @@ import jakarta.validation.constraints.Email;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -66,11 +67,13 @@ public class User {
 
     @ToString.Exclude
     @OneToMany(mappedBy = "holder", cascade = REMOVE, orphanRemoval = true, fetch = LAZY)
-    private List<Account> accounts;
+    @Builder.Default
+    private List<Account> accounts = new ArrayList<>();
 
     @ToString.Exclude
     @OneToMany(mappedBy = "user", fetch = LAZY, cascade = REMOVE)
-    private List<VerificationCode> verificationCode;
+    @Builder.Default
+    private List<VerificationCode> verificationCode = new ArrayList<>();
 
     @ManyToMany()
     @ToString.Exclude
@@ -83,21 +86,32 @@ public class User {
 
     @ToString.Exclude
     @OneToMany(mappedBy = "user", orphanRemoval = true, fetch = LAZY, cascade = REMOVE)
-    private List<TrustedDevice> trustedDevice;
+
+    @Builder.Default
+    private List<TrustedDevice> trustedDevice = new ArrayList<>();
 
     @ToString.Exclude
     @OneToMany(mappedBy = "user", fetch = LAZY, cascade = REMOVE)
-    private List<TokenFamily> tokenFamilies;
+    @Builder.Default
+    private List<TokenFamily> tokenFamilies = new ArrayList<>();
 
     @ToString.Exclude
     @OneToMany(mappedBy = "user", fetch = LAZY, cascade = REMOVE)
-    private List<UserCategoryStats> userCategoryStats;
+    @Builder.Default
+    private List<UserCategoryStats> userCategoryStats = new ArrayList<>();
 
     @ToString.Exclude
     @OneToMany(fetch = LAZY, mappedBy = "user", cascade = REMOVE)
-    private List<UserQuest> userQuest;
+    @Builder.Default
+    private List<UserQuest> userQuest = new ArrayList<>();
 
     @ToString.Exclude
     @OneToMany(mappedBy = "user", cascade = REMOVE)
-    private List<DeviceChallenge> deviceChallenges;
+    @Builder.Default
+    private List<DeviceChallenge> deviceChallenges = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", cascade = REMOVE)
+    @ToString.Exclude
+    @Builder.Default
+    private List<BonusAccount> bonusAccounts = new ArrayList<>();
 }

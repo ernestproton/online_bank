@@ -3,7 +3,10 @@ package com.example.online_bank.domain.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import static jakarta.persistence.GenerationType.IDENTITY;
 
 @Entity
 @Table
@@ -15,7 +18,7 @@ import java.util.List;
 @Setter
 public class TokenFamily {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = IDENTITY)
     private Long id;
     @Column
     private Boolean isBlocked;
@@ -26,7 +29,8 @@ public class TokenFamily {
 
     @OneToMany(mappedBy = "family")
     @ToString.Exclude
-    private List<RefreshToken> refreshTokens;
+    @Builder.Default
+    private List<RefreshToken> refreshTokens = new ArrayList<>();
 
     @ManyToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id")
