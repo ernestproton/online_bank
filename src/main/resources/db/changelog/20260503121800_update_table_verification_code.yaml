@@ -1,0 +1,13 @@
+databaseChangeLog:
+  - changeSet:
+      id: 20260503121800_update_table_verification_code.yaml
+      author: gilmanovamir
+      changes:
+        - modifyDataType:
+            tableName: verification_code
+            columnName: code_type
+            newDataType: varchar(100)
+        - modifyDataType:
+            tableName: verification_code
+            columnName: verification_code
+            newDataType: varchar(10)

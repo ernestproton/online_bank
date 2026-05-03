@@ -70,15 +70,15 @@ public class AdviceController {
         return new ResponseEntity<>(e.getMessage(), BAD_REQUEST);
     }
 
-    /**
-     * @param e обработка ошибки когда произошла неизвестная ошибка
-     * @return 503 HTTP статус
-     */
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<String> handleApiException(Exception e) {
-        return ResponseEntity.status(SERVICE_UNAVAILABLE)
-                .body("Сервис временно не работает, но мы работаем над этим");
-    }
+//    /**
+//     * @param e обработка ошибки когда произошла неизвестная ошибка
+//     * @return 503 HTTP статус
+//     */
+//    @ExceptionHandler(Exception.class)
+//    public ResponseEntity<String> handleApiException(Exception e) {
+//        return ResponseEntity.status(SERVICE_UNAVAILABLE)
+//                .body("Сервис временно не работает, но мы работаем над этим");
+//    }
 
     @ExceptionHandler(BadCredentialsException.class)
     public ResponseEntity<String> handleBadCredentialsException(Exception e) {

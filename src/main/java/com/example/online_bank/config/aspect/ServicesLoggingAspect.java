@@ -18,7 +18,7 @@ public class ServicesLoggingAspect {
 
     @Before("pointCut()")
     public void logBefore(JoinPoint joinPoint) {
-        String className = joinPoint.getTarget().getClass().getName();
+           String className = joinPoint.getTarget().getClass().getName();
         String methodName = joinPoint.getSignature().getName();
         Object[] methodArgs = joinPoint.getArgs();
         log.info("Метод {} с аргументами {}", className + "." + methodName, methodArgs);

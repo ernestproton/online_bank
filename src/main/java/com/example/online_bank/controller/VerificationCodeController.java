@@ -9,9 +9,9 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/otpCode")
+@RequestMapping("/api/verification-code")
 @RequiredArgsConstructor
-public class VerifiedCodeController {
+public class VerificationCodeController {
     private final VerificationManager verificationManager;
     private final VerificationCodeService verificationCodeService;
 
@@ -21,7 +21,7 @@ public class VerifiedCodeController {
         verificationCodeService.clearOldCodes();
     }
 
-    @PatchMapping("/update/otp")
+    @PatchMapping("/update")
     public ResponseEntity<Void> regenerateCode(@RequestBody RegenerateVerifiedCodeDto dto) {
         verificationManager.regenerateOtp(dto);
         return ResponseEntity.ok().build();

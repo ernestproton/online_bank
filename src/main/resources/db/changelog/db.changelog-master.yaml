@@ -81,3 +81,5 @@ databaseChangeLog:
       file: db/changelog/20260425184800_add_column_device_challenges.yaml
   - include:
       file: db/changelog/20260502210300_add_column_bonus_account.yaml
+  - include:
+      file: db/changelog/20260503121800_update_table_verification_code.yaml

@@ -141,6 +141,9 @@ public class AccountService {
                 .orElseThrow(() -> new EntityNotFoundException("Счет с номером %s не найден".formatted(accountNumber)));
     }
 
+    /**
+     * Передаем номер счета и вытаскиваем его курс
+     */
     public CurrencyCode findCurrencyCode(String accountNumber) {
         return accountRepository.findCurrencyCodeByAccountNumber(accountNumber)
                 .orElseThrow(() -> new EmptyDataException(("Счет с номером %s не найден".formatted(accountNumber))));

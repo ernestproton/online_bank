@@ -28,8 +28,11 @@ public class QuestController {
         return ResponseEntity.ok(questService.createRandomQuest());
     }
 
-    @GetMapping("/get-verifiedUser")
-    public ResponseEntity<List<UserQuestResponseDto>> findAllUserQuest(@AuthenticationPrincipal JwtUserDetails userDetails) {
+    @GetMapping("/load-user")
+    public ResponseEntity<List<UserQuestResponseDto>> findAllUserQuest(
+            @AuthenticationPrincipal
+            JwtUserDetails userDetails
+    ) {
         return ResponseEntity.ok(questService.findAllByUserQuest(UUID.fromString(userDetails.getUuid())));
     }
 }

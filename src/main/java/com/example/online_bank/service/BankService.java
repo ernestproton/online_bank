@@ -1,6 +1,7 @@
 package com.example.online_bank.service;
 
 import com.example.online_bank.domain.dto.BuyCurrencyDto;
+import com.example.online_bank.domain.dto.ConvertCurrencyResponseDto;
 import com.example.online_bank.domain.dto.FinanceOperationDto;
 import com.example.online_bank.domain.dto.OperationInfoDto;
 import com.example.online_bank.enums.CurrencyCode;
@@ -9,7 +10,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -22,7 +22,7 @@ public class BankService {
     private final AccountService accountService;
     private final OperationService operationService;
     private final OperationMapper operationMapper;
-    private final ValidateCurrencyService validateCurrencyService;
+    private final CurrencyConversionService currencyConversionService;
 
     /**
      * Делать платеж:
@@ -37,18 +37,19 @@ public class BankService {
     public OperationInfoDto makePayment(FinanceOperationDto dto) {
         CurrencyCode accountCurrencyCode = accountService.findCurrencyCode(dto.accountNumber());
 
-        BigDecimal finalAmount = validateCurrencyService.processTransaction(
-                accountCurrencyCode,
+        ConvertCurrencyResponseDto convertedResult = currencyConversionService.convert(
                 dto.selectedCurrencyCode(),
-                accountService::withdrawMoney,
-                dto.accountNumber(),
+                accountCurrencyCode,
                 dto.amount()
         );
+
+        accountService.withdrawMoney(dto.accountNumber(), convertedResult.targetConvertedAmount());
+
 
         return operationMapper.toOperationInfoDto(operationService.createOperation(
                 LocalDateTime.now(),
                 WITHDRAW,
-                finalAmount,
+                convertedResult.targetConvertedAmount(),
                 dto.description(),
                 dto.accountNumber(),
                 dto.selectedCurrencyCode())
@@ -62,22 +63,24 @@ public class BankService {
      * @param dto Содержит информацию о номере счета, код валюты, описание, количестве денег
      * @return Возвращает информацию об операции пополнении счета
      */
+
     @Transactional()
     public OperationInfoDto makeDeposit(FinanceOperationDto dto) {
-        CurrencyCode accountCurrencyCode = accountService.findCurrencyCode(dto.accountNumber());
+         CurrencyCode accountCurrencyCode = accountService.findCurrencyCode(dto.accountNumber());
 
-        BigDecimal finalAmount = validateCurrencyService.processTransaction(
-                accountCurrencyCode,
+        ConvertCurrencyResponseDto convertedResult = currencyConversionService.convert(
                 dto.selectedCurrencyCode(),
-                accountService::depositMoney,
-                dto.accountNumber(), dto.amount()
+                accountCurrencyCode,
+                dto.amount()
         );
+
+        accountService.depositMoney(dto.accountNumber(), convertedResult.targetConvertedAmount());
 
         //TODO перевести на ивенты
         return operationMapper.toOperationInfoDto(operationService.createOperation(
                 LocalDateTime.now(),
                 DEPOSIT,
-                finalAmount,
+                convertedResult.targetConvertedAmount(),
                 dto.description(),
                 dto.accountNumber(),
                 dto.selectedCurrencyCode())
