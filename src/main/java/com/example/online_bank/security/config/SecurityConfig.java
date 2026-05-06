@@ -4,7 +4,6 @@ import com.example.online_bank.security.filter.JwtRequestFilter;
 import com.example.online_bank.security.provider.JwtRequestProvider;
 import com.example.online_bank.service.UserService;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -32,10 +31,6 @@ import static org.springframework.security.config.http.SessionCreationPolicy.STA
 @EnableWebSecurity
 @EnableMethodSecurity(securedEnabled = true)
 public class SecurityConfig {
-
-    @Value("${app.cors.allowed-origins}")
-    private String corsUrl;
-
     //    Реализация фильтра для настройки конечных точек протокола
     @Bean
     public SecurityFilterChain securityFilterChain(
@@ -102,8 +97,8 @@ public class SecurityConfig {
 
         configuration.setAllowCredentials(true); // Для JWT/Cookies
         configuration.setAllowedOrigins(List.of(
-                corsUrl,
-                "http://localhost:3000/"
+                "https://online-bank-hyper-revolution-comput.vercel.app",
+                "http://localhost:3000"
         ));
         configuration.setAllowedHeaders(List.of("*"));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
