@@ -102,7 +102,8 @@ public class SecurityConfig {
 
         configuration.setAllowCredentials(true); // Для JWT/Cookies
         configuration.setAllowedOrigins(List.of(
-                corsUrl
+                corsUrl,
+                "http://localhost:3000/"
         ));
         configuration.setAllowedHeaders(List.of("*"));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));

@@ -69,6 +69,9 @@ jwt:
 app:
   cors:
     allowed-origins: https://online-bank-hyper-revolution-comput.vercel.app
+#app:
+#  cors:
+#    allowed-origins: http://localhost:3000
 
 resend:
   api-key: ${RESEND_API_KEY}
