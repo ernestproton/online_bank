@@ -166,7 +166,7 @@ public class AuthenticationService {
     @Transactional
     public AuthenticationResponseDto silentLogin(SilentLoginRequestDto dto) {
         //1. Парсим токен
-        Claims claims = jwtService.getPayload(dto.token());
+        Claims claims = jwtService.getPayload(dto.refreshToken());
         String oldTokenUuid = jwtService.getUuid(claims);
         //2. Ищем токен
         RefreshToken refreshTokenEntity = refreshTokenService.findByUuid(oldTokenUuid);
@@ -174,9 +174,9 @@ public class AuthenticationService {
         User user = family.getUser();
         checkReuseDetection(refreshTokenEntity, family, dto.deviceId(), user);
 
-        log.debug("start revoke old token");
+        log.debug("start revoke old refreshToken");
         refreshTokenService.revoke(refreshTokenEntity);
-
+        log.info("Ротация токенов произошла успешно");
         return handleTokenProcessCreating(user, family);
     }
 

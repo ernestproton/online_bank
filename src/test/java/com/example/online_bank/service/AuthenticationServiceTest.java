@@ -321,7 +321,7 @@ class AuthenticationServiceTest {
         refreshTokenMock.setFamily(tokenFamilyMock);
 
 
-        var silentLoginRequestDto = new SilentLoginRequestDto("token", UUID.randomUUID().toString());
+        var silentLoginRequestDto = new SilentLoginRequestDto("refreshToken", UUID.randomUUID().toString());
         when(jwtService.getPayload(anyString())).thenReturn(claimsMock);
         when(jwtService.getUuid(eq(claimsMock))).thenReturn(oldTokenUuid);
         when(refreshTokenService.findByUuid(eq(oldTokenUuid))).thenReturn(refreshTokenMock);
@@ -349,7 +349,7 @@ class AuthenticationServiceTest {
                 .tokenFamilies(List.of(tokenFamilyMock))
                 .build();
 
-        var silentLoginRequestDto = new SilentLoginRequestDto("token", UUID.randomUUID().toString());
+        var silentLoginRequestDto = new SilentLoginRequestDto("refreshToken", UUID.randomUUID().toString());
         when(jwtService.getPayload(anyString())).thenReturn(claimsMock);
         when(jwtService.getUuid(eq(claimsMock))).thenReturn(oldTokenUuid);
         when(refreshTokenService.findByUuid(eq(oldTokenUuid))).thenReturn(refreshTokenMock);

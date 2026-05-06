@@ -34,6 +34,8 @@ public class UpdateUserQuestEventListener {
             log.error("Квесты пользователя не были найдены");
             return new EntityNotFoundException("Прогресс пользователя по данным квестам не найден");
         });
+        log.info("Потрачено в событие - {}", event.totalSpendAmount());
+        log.info("Сколько необходимо потратить для квеста - {}", userQuest.getQuest().getPointReward());
 
         //2. Если потраченного >= чем требуется для данного квеста, то создаем событие на обновление счета
         if (event.totalSpendAmount().compareTo(userQuest.getQuest().getPointReward()) >= 0) {

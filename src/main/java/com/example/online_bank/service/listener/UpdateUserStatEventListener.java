@@ -31,7 +31,7 @@ public class UpdateUserStatEventListener {
                 userCategoryStats.getUser(),
                 userCategoryStats.getLastSpendDate(),
                 event.userAccount(),
-                event.spendAmount()
+                userCategoryStats.getTotalSpend()
         );
         log.info("Отправляю ивент UserQuest");
         applicationEventPublisher.publishEvent(updateUserQuestEvent);
