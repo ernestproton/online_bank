@@ -97,6 +97,7 @@ public class SecurityConfig {
 
         configuration.setAllowCredentials(true); // Для JWT/Cookies
         configuration.setAllowedOrigins(List.of(
+                "https://online-bank-hyper-revolution-computer-systems-9snxospn0.vercel.app",
                 "https://online-bank-hyper-revolution-computer-systems-ly60rs8rj.vercel.app",
                 "https://online-bank-hyper-revolution-comput.vercel.app",
                 "https://online-bank-hyper-revolution-git-cf49f5-amirgilmanovs-projects.vercel.app",
