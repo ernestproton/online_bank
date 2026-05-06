@@ -3,9 +3,7 @@ package com.example.online_bank.security.config;
 import com.example.online_bank.security.filter.JwtRequestFilter;
 import com.example.online_bank.security.provider.JwtRequestProvider;
 import com.example.online_bank.service.UserService;
-import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpServletResponse;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -30,18 +28,13 @@ import java.util.List;
 
 import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
 
-@Slf4j
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity(securedEnabled = true)
 public class SecurityConfig {
+
     @Value("${app.cors.allowed-origins}")
     private String corsUrl;
-
-    @PostConstruct
-    void init(){
-        log.info("CORS URL IS - {}", corsUrl);
-    }
 
     //    Реализация фильтра для настройки конечных точек протокола
     @Bean
@@ -108,7 +101,9 @@ public class SecurityConfig {
         CorsConfiguration configuration = new CorsConfiguration();
 
         configuration.setAllowCredentials(true); // Для JWT/Cookies
-        configuration.setAllowedOrigins(List.of(corsUrl));
+        configuration.setAllowedOrigins(List.of(
+                corsUrl
+        ));
         configuration.setAllowedHeaders(List.of("*"));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
 
