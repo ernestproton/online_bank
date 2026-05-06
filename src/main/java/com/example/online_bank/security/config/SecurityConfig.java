@@ -44,7 +44,7 @@ public class SecurityConfig {
             Exception {
         return http
                 .csrf(AbstractHttpConfigurer::disable)
-                .cors(cors -> cors.configurationSource(dirtyCorsConfigurationSource()))
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(authRequestManager ->
                         authRequestManager
                                 .requestMatchers(
@@ -97,20 +97,15 @@ public class SecurityConfig {
     }
 
     @Bean
-    public CorsConfigurationSource dirtyCorsConfigurationSource() {
+    public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
 
-        // РЕЖИМ "ПУСКАТЬ ВСЕХ":
-        configuration.setAllowedOriginPatterns(List.of("*"));
-        configuration.setAllowedOrigins(List.of(
-                "https://online-bank-hyper-revolution-comput.vercel.app/",
-                "https://online-bank-hyper-revolution-git-cf49f5-amirgilmanovs-projects.vercel.app/",
-                "https://online-bank-hyper-revolution-computer-systems-iillnjp9z.vercel.app/",
-                "http://localhost:3000/"
-        ));
-        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
-        configuration.setAllowedHeaders(List.of("*"));
         configuration.setAllowCredentials(true); // Для JWT/Cookies
+        configuration.setAllowedOrigins(List.of(
+                corsUrl
+        ));
+        configuration.setAllowedHeaders(List.of("*"));
+        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
