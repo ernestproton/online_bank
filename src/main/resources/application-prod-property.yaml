@@ -1,3 +1,3 @@
 app:
   cors:
-    allowed-origins: "https://online-bank-hyper-revolution-comput.vercel.app"
+    allowed-origins: https://online-bank-hyper-revolution-comput.vercel.app
