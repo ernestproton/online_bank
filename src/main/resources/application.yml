@@ -68,7 +68,7 @@ jwt:
 
 app:
   cors:
-    allowed-origins: https://online-bank-hyper-revolution-comput.vercel.app
+    allowed-origins: ${CORS_URL}
 #app:
 #  cors:
 #    allowed-origins: http://localhost:3000
