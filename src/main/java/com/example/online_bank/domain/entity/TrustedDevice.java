@@ -4,8 +4,6 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 import static jakarta.persistence.FetchType.LAZY;
 import static jakarta.persistence.GenerationType.IDENTITY;
@@ -35,8 +33,7 @@ public class TrustedDevice {
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
 
-    @OneToMany(mappedBy = "trustedDevice")
+    @OneToOne(mappedBy = "trustedDevice")
     @ToString.Exclude
-    @Builder.Default
-    private List<TokenFamily> tokenFamilies = new ArrayList<>();
+    private TokenFamily tokenFamily;
 }

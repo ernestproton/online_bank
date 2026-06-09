@@ -97,3 +97,7 @@ databaseChangeLog:
       file: db/changelog/20260505170700_change_column_type_quest.yaml
   - include:
       file: db/changelog/20260505172400_delete_column_user_quest.yaml
+  - include:
+      file: db/changelog/20260609153200_drop_column_token_family.yaml
+  - include:
+      file: db/changelog/20260609154700_drop_column_token_family.yaml

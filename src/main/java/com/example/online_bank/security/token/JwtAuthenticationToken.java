@@ -8,7 +8,7 @@ import java.util.Collection;
 
 public class JwtAuthenticationToken extends AbstractAuthenticationToken {
     /**
-     * Мы храним jwt token, в объекте JwtAuthenticationToken потому что JwtAuthenticationToken имеет два состояния:
+     * Мы храним jwt refreshToken, в объекте JwtAuthenticationToken потому что JwtAuthenticationToken имеет два состояния:
      * до аутентификации и после аутентификации
      */
     @Getter

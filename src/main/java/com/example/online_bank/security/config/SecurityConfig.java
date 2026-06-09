@@ -55,7 +55,8 @@ public class SecurityConfig {
                                         "/api/default-verify/email",
                                         "/api/token/get-access-token",
                                         "/api/login",
-                                        "/api/silent"
+                                        "/api/silent",
+                                        "/api/logout"
                                 )
                                 .permitAll()
                                 .requestMatchers(

@@ -346,7 +346,7 @@ class AuthenticationServiceTest {
         refreshTokenMock.setFamily(tokenFamilyMock);
 
         User userMock = User.builder()
-                .tokenFamilies(List.of(tokenFamilyMock))
+               // .tokenFamilies(List.of(tokenFamilyMock))
                 .build();
 
         var silentLoginRequestDto = new SilentLoginRequestDto("refreshToken", UUID.randomUUID().toString());
@@ -357,7 +357,7 @@ class AuthenticationServiceTest {
                 ReuseDetectionException.class, () -> authenticationService.silentLogin(silentLoginRequestDto));
         assertEquals(HACKING_ATTEMPT_DETECTED.getValue(), reuseDetectionException.getMessage());
 
-        verify(tokenFamilyService).blockFamily(tokenFamilyMock);
+       // verify(tokenFamilyService).blockFamily(tokenFamilyMock);
         verify(refreshTokenService).revokeAllByFamily(tokenFamilyMock);
         verify(trustedDeviceService).deleteByUserAndDeviceId(eq(silentLoginRequestDto.deviceId()), any());
     }
@@ -379,7 +379,7 @@ class AuthenticationServiceTest {
         when(jwtService.getPayload(anyString())).thenReturn(claimsMock);
         when(jwtService.getUuid(eq(claimsMock))).thenReturn(oldTokenUuid);
         when(refreshTokenService.findByUuid(eq(oldTokenUuid))).thenReturn(refreshTokenMock);
-        doNothing().when(tokenFamilyService).blockFamily(eq(tokenFamilyMock));
+   //     doNothing().when(tokenFamilyService).blockFamily(eq(tokenFamilyMock));
         doNothing().when(refreshTokenService).revoke(eq(refreshTokenMock));
 
         assertDoesNotThrow(() -> authenticationService.logout(logoutRequestDto));
@@ -407,7 +407,7 @@ class AuthenticationServiceTest {
                 ReuseDetectionException.class, () -> authenticationService.logout(logoutRequestDto));
         assertEquals(HACKING_ATTEMPT_DETECTED.getValue(), reuseDetectionException.getMessage());
 
-        verify(tokenFamilyService).blockFamily(tokenFamilyMock);
+       // verify(tokenFamilyService).blockFamily(tokenFamilyMock);
         verify(refreshTokenService).revokeAllByFamily(tokenFamilyMock);
         verify(trustedDeviceService).deleteByUserAndDeviceId(eq(logoutRequestDto.deviceId()), any());
     }

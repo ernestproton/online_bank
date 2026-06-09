@@ -21,7 +21,7 @@ public class IdTokenProvider implements TokenProvider {
     private final JwtService jwtService;
 
     /**
-     * @param userContainer - token - Информация о пользователе
+     * @param userContainer - refreshToken - Информация о пользователе
      * @return Токен Id
      * имя
      */
@@ -54,7 +54,7 @@ public class IdTokenProvider implements TokenProvider {
                 .issuedAt(issuedDate)
                 .compact();
 
-        log.info("id token created {}", token);
+        log.info("id refreshToken created {}", token);
         return token;
     }
 

@@ -42,6 +42,7 @@ public class BonusAccountService {
                 .orElseThrow(EntityNotFoundException::new);
     }
 
+    @Transactional
     public OperationInfoDto convertPoints(String accountNumber, BigDecimal amountPoints) {
         BonusAccount bonusAccount = bonusAccountRepository.findByAccount_AccountNumber(accountNumber).orElseThrow(
                 () -> new EntityNotFoundException("Счет не существует")
@@ -71,7 +72,7 @@ public class BonusAccountService {
         bonusAccountRepository.save(bonusAccount);
     }
 
-    private void withdrawBonus(String accountNumber, BigDecimal points){
+    private void withdrawBonus(String accountNumber, BigDecimal points) {
         BonusAccount bonusAccount = findBonusAccountByAccountNumber(accountNumber);
         bonusAccount.setPoints(bonusAccount.getPoints().subtract(points));
 

@@ -90,10 +90,10 @@ public class User {
     @Builder.Default
     private List<TrustedDevice> trustedDevice = new ArrayList<>();
 
-    @ToString.Exclude
-    @OneToMany(mappedBy = "user", fetch = LAZY, cascade = REMOVE)
-    @Builder.Default
-    private List<TokenFamily> tokenFamilies = new ArrayList<>();
+//    @ToString.Exclude
+//    @OneToMany(mappedBy = "user", fetch = LAZY, cascade = REMOVE)
+//    @Builder.Default
+//    private List<TokenFamily> tokenFamilies = new ArrayList<>();
 
     @ToString.Exclude
     @OneToMany(mappedBy = "user", fetch = LAZY, cascade = REMOVE)

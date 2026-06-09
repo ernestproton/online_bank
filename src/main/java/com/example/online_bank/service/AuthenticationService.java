@@ -110,31 +110,34 @@ public class AuthenticationService {
 
     @Transactional
     public AuthenticationResponseDto login(LoginRequestDto loginRequest) {
-        //Проверка пароля
+        //Аутентификация пользователя по учетным данным
         Authentication authenticate = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginRequest.email(), loginRequest.password())
         );
+        //Получаем пользователя для дальнейшей обработки запроса
         CustomUserDetails details = (CustomUserDetails) authenticate.getPrincipal();
         User user = details.user();
 
-        //Ищем устройство по пользователю и fingerPrint устройства
+        //Ищем доверенное устройство пользователя по метаданным устройства
         TrustedDevice trustedDevice = trustedDeviceService.findByParam(
                 loginRequest.deviceName(),
                 loginRequest.deviceId(),
                 user
         ).orElseThrow(() -> {
+            //Формируем ответ для клиента о необходимости подтвердить вход
             deviceFlowService.handleNewUserDevice(loginRequest, user);
             return new DeviceNotFoundException(CONFIRM_LOGIN_MESSAGE.getValue());
         });
-
-        //Проверка userAgent
+        //todo пока не понятно нужно ли проверять userAgent и trusted_device
+        //Проверяем соответствие User-Agent по ранее зарегистрированному устройству
         userAgentService.checkUserAgent(loginRequest.userAgent(), trustedDevice.getUserAgent());
 
         if (!userAgentService.checkBrowserVersion(loginRequest.userAgent(), trustedDevice.getUserAgent())) {
+            //Если версии браузера отличаются, обновляем User-Agent устройства
             trustedDeviceService.updateUserAgent(loginRequest.userAgent(), trustedDevice);
         }
-
-        TokenFamily tokenFamily = tokenFamilyService.create(trustedDevice, user);
+        //Создаем токены доступа и обновления и отправляем их клиенту
+        TokenFamily tokenFamily = trustedDevice.getTokenFamily();
         return handleTokenProcessCreating(user, tokenFamily);
     }
 
@@ -165,32 +168,35 @@ public class AuthenticationService {
      */
     @Transactional
     public AuthenticationResponseDto silentLogin(SilentLoginRequestDto dto) {
-        //1. Парсим токен
-        Claims claims = jwtService.getPayload(dto.refreshToken());
-        String oldTokenUuid = jwtService.getUuid(claims);
-        //2. Ищем токен
-        RefreshToken refreshTokenEntity = refreshTokenService.findByUuid(oldTokenUuid);
+        RefreshToken refreshTokenEntity = getRefreshTokenAndHandleRevoke(dto.refreshToken(), dto.deviceId());
         TokenFamily family = refreshTokenEntity.getFamily();
-        User user = family.getUser();
-        checkReuseDetection(refreshTokenEntity, family, dto.deviceId(), user);
+        User user = family.getTrustedDevice().getUser();
 
         log.debug("start revoke old refreshToken");
         refreshTokenService.revoke(refreshTokenEntity);
         log.info("Ротация токенов произошла успешно");
+
         return handleTokenProcessCreating(user, family);
     }
 
     @Transactional
     public void logout(LogoutRequestDto dto) {
+        log.info("Выход из 'сессии'");
         //1. Парсим токен
-        Claims claims = jwtService.getPayload(dto.token());
+        RefreshToken refreshTokenEntity = getRefreshTokenAndHandleRevoke(dto.refreshToken(), dto.deviceId());
+        //  tokenFamilyService.blockFamily(family);
+        refreshTokenService.revoke(refreshTokenEntity);
+    }
+
+    private RefreshToken getRefreshTokenAndHandleRevoke(String refreshToken, String deviceId) {
+        Claims claims = jwtService.getPayload(refreshToken);
         String oldTokenUuid = jwtService.getUuid(claims);
         RefreshToken refreshTokenEntity = refreshTokenService.findByUuid(oldTokenUuid);
         TokenFamily family = refreshTokenEntity.getFamily();
+        User user = family.getTrustedDevice().getUser();
 
-        checkReuseDetection(refreshTokenEntity, family, dto.deviceId(), family.getUser());
-        tokenFamilyService.blockFamily(family);
-        refreshTokenService.revoke(refreshTokenEntity);
+        checkReuseDetection(refreshTokenEntity, family, deviceId, user);
+        return refreshTokenEntity;
     }
 
     /*
@@ -198,18 +204,18 @@ public class AuthenticationService {
      * */
     public AuthenticationResponseDto handleTokenProcessCreating(User user, TokenFamily tokenFamily) {
         UserContainer userContainer = userMapper.toUserContainer(user);
-
+        //создаем токены
         String accessToken = tokenService.getAccessToken(userContainer);
         String idToken = tokenService.getIdToken(userContainer);
         String refreshToken = tokenService.getRefreshToken(userContainer);
-
+        //извлекаем данные у refresh токена для записи в бд
         Claims refreshTokenClaims = jwtService.getPayload(refreshToken);
 
-        String tokenUuid = jwtService.getUuid(refreshTokenClaims);
-        LocalDateTime createdDate = jwtService.getCreatedDate(refreshTokenClaims);
-        LocalDateTime expDate = jwtService.getExpDate(refreshTokenClaims);
+        String refreshTokenUuid = jwtService.getUuid(refreshTokenClaims);
+        LocalDateTime refreshTokenCreatedDate = jwtService.getCreatedDate(refreshTokenClaims);
+        LocalDateTime refreshTokenExpDate = jwtService.getExpDate(refreshTokenClaims);
 
-        refreshTokenService.create(tokenUuid, refreshToken, tokenFamily, expDate, createdDate);
+        refreshTokenService.create(refreshTokenUuid, refreshToken, tokenFamily, refreshTokenExpDate, refreshTokenCreatedDate);
         return createAuthResponse(accessToken, idToken, refreshToken);
     }
 
@@ -230,7 +236,7 @@ public class AuthenticationService {
     ) {
         if (refreshToken.getStatus().equals(REVOKED)) {
             log.warn("Reuse detected");
-            tokenFamilyService.blockFamily(family);
+            //tokenFamilyService.blockFamily(family);
             refreshTokenService.revokeAllByFamily(family);
             trustedDeviceService.deleteByUserAndDeviceId(deviceId, user);
             throw new ReuseDetectionException(HACKING_ATTEMPT_DETECTED.getValue());

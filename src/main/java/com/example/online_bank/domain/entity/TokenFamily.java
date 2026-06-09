@@ -20,10 +20,8 @@ public class TokenFamily {
     @Id
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
-    @Column
-    private Boolean isBlocked;
 
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "trusted_device_id", referencedColumnName = "id")
     private TrustedDevice trustedDevice;
 
@@ -32,7 +30,7 @@ public class TokenFamily {
     @Builder.Default
     private List<RefreshToken> refreshTokens = new ArrayList<>();
 
-    @ManyToOne
-    @JoinColumn(name = "user_id", referencedColumnName = "id")
-    private User user;
+//    @ManyToOne
+//    @JoinColumn(name = "user_id", referencedColumnName = "id")
+//    private User user;
 }

@@ -60,7 +60,7 @@ public class AccessTokenProvider implements TokenProvider {
                 .compact();
 
         //todo сделать тестовые логи
-        log.info("access token created {}", token);
+        log.info("access refreshToken created {}", token);
         return token;
     }
 

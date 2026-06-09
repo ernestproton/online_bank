@@ -1,0 +1,8 @@
+databaseChangeLog:
+  - changeSet:
+      id: 0
+      author: gilmanovamir
+      changes:
+        - dropColumn:
+            tableName: token_family
+            columnName: user_id

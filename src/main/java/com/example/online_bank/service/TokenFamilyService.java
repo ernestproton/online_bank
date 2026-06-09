@@ -18,17 +18,18 @@ public class TokenFamilyService {
 
     public TokenFamily create(TrustedDevice trustedDevice, User user) {
         TokenFamily tokenFamily = TokenFamily.builder()
-                .isBlocked(false)
+            //    .isBlocked(false)
                 .trustedDevice(trustedDevice)
-                .user(user)
+             //   .user(user)
                 .build();
         save(tokenFamily);
         return tokenFamily;
     }
 
-    public void blockFamily(TokenFamily family) {
-        family.setIsBlocked(true);
-        tokenFamilyRepository.save(family);
-    }
+//    @Transactional
+//    public void blockFamily(TokenFamily family) {
+//       // family.setIsBlocked(true);
+//        tokenFamilyRepository.save(family);
+//    }
 
 }
