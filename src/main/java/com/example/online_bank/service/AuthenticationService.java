@@ -25,6 +25,7 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 
 import static com.example.online_bank.enums.AuthenticationResponseKey.*;
+import static com.example.online_bank.enums.CodeType.EMAIL_AUTHENTICATION;
 import static com.example.online_bank.enums.CodeType.EMAIL_VERIFICATION;
 import static com.example.online_bank.enums.SecurityMessage.CONFIRM_LOGIN_MESSAGE;
 import static com.example.online_bank.enums.SecurityMessage.HACKING_ATTEMPT_DETECTED;
@@ -87,7 +88,7 @@ public class AuthenticationService {
         VerificationResponseDto verificationResponseDto = verificationManager.verifyUserByEmail(
                 verificationRequestDto.verificationCode(),
                 verificationRequestDto.email(),
-                EMAIL_VERIFICATION
+                EMAIL_AUTHENTICATION
         );
         log.info("Начало проверки device challenge");
         deviceChallengeService.existsByParameters(
