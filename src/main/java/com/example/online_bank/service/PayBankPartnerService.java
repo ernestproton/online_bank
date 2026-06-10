@@ -22,7 +22,7 @@ public class PayBankPartnerService {
 
     @Transactional
     public OperationInfoDto pay(PayDtoRequest payDtoRequest, UUID userUuid) {
-        //1. снимаем деньги с отправителя
+        //1. снимаем деньги со счета пользователя
         FinanceOperationDto senderDto = createSenderDto(payDtoRequest);
         OperationInfoDto senderOperationResponse = bankService.makePayment(senderDto);
 
@@ -39,7 +39,6 @@ public class PayBankPartnerService {
                 senderDto.accountNumber(),
                 category
         );
-
                 applicationEventPublisher.publishEvent(updateUserStatEvent);
 
         return senderOperationResponse;

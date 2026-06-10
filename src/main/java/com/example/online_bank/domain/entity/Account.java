@@ -8,7 +8,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-import static jakarta.persistence.CascadeType.MERGE;
+import static jakarta.persistence.CascadeType.ALL;
 import static jakarta.persistence.EnumType.STRING;
 import static jakarta.persistence.FetchType.LAZY;
 import static jakarta.persistence.GenerationType.IDENTITY;
@@ -55,7 +55,7 @@ public class Account {
     @ToString.Exclude
     private BankPartner bankPartner;
 
-    @OneToOne(mappedBy = "account", cascade = MERGE)
+    @OneToOne(mappedBy = "account", cascade = ALL)
     @ToString.Exclude
     private BonusAccount bonusAccount;
 }
