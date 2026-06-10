@@ -50,7 +50,7 @@ public class JwtSecretKeyInitializer {
     public void initSecretKey() throws IOException {
         log.debug("init secret key");
         File file = new File(jwtConfig.getFileName());
-        if (file.exists()) {
+            if (file.exists()) {
             log.debug("Decoding secret key");
             jwtConfig.setKey(secretKeyManager.decodeFile(file.getName()));
             log.debug("Secret key decoded successfully");

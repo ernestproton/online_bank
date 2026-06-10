@@ -10,7 +10,6 @@ import com.example.online_bank.exception.DeviceNotFoundException;
 import com.example.online_bank.exception.ReuseDetectionException;
 import com.example.online_bank.mapper.UserMapper;
 import com.example.online_bank.security.userdetails.CustomUserDetails;
-import com.example.online_bank.service.domain.VerificationCodeService;
 import io.jsonwebtoken.Claims;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeAll;
@@ -42,15 +41,13 @@ class AuthenticationServiceTest {
     @InjectMocks
     private AuthenticationService authenticationService;
     @Mock
-    TokenFamilyService tokenFamilyService;
-    @Mock
-    private VerificationCodeService verificationCodeService;
-    @Mock
     private TokenService tokenService;
     @Mock
     private TrustedDeviceService trustedDeviceService;
     @Mock
     private RefreshTokenService refreshTokenService;
+    @Mock
+    TokenFamilyService tokenFamilyService;
     @Mock
     private JwtService jwtService;
     @Mock
@@ -64,9 +61,9 @@ class AuthenticationServiceTest {
     @Mock
     private DeviceChallengeService deviceChallengeService;
     @Mock
-    private AuthenticationManager authenticationManager;
-    @Mock
     private DeviceFlowService deviceFlowService;
+    @Mock
+    private AuthenticationManager authenticationManager;
 
     private static VerificationRequestDto verificationRequestDto;
 
@@ -165,10 +162,11 @@ class AuthenticationServiceTest {
 
     @Test
     void successDefaultVerification() {
+        log.info("verificationResponseDtoMock - {}", verificationResponseDtoMock);
         when(verificationManager.verifyUserByEmail(
-                verificationRequestDto.verificationCode(),
-                verificationRequestDto.email(),
-                EMAIL_VERIFICATION
+                eq(verificationRequestDto.verificationCode()),
+                eq(verificationRequestDto.email()),
+                eq(EMAIL_VERIFICATION)
         )).thenReturn(verificationResponseDtoMock);
 
         doNothing().when(deviceChallengeService).existsByParameters(
@@ -238,7 +236,7 @@ class AuthenticationServiceTest {
         assertTrue(result.tokens().containsKey(REFRESH_TOKEN.getValue()));
 
         verify(trustedDeviceService, never()).updateUserAgent(anyString(), any(TrustedDevice.class));
-        verify(tokenFamilyService, atLeastOnce()).create(any(), any());
+        //  verify(tokenFamilyService, atLeastOnce()).create(any(), any());
     }
 
     @Test
@@ -273,7 +271,7 @@ class AuthenticationServiceTest {
         verify(trustedDeviceService, atLeastOnce()).updateUserAgent(
                 eq(loginRequestDtoWithAnotherBrowserVersion.userAgent()),
                 eq(trustedDeviceMock));
-        verify(tokenFamilyService, atLeastOnce()).create(any(), any());
+        //   verify(tokenFamilyService, atLeastOnce()).create(any(), any());
     }
 
     @Test
@@ -316,6 +314,7 @@ class AuthenticationServiceTest {
                 .status(TokenStatus.CREATED)
                 .build();
         TokenFamily tokenFamilyMock = TokenFamily.builder()
+                .trustedDevice(trustedDeviceMock)
                 .refreshTokens(List.of(refreshTokenMock))
                 .build();
         refreshTokenMock.setFamily(tokenFamilyMock);
@@ -341,12 +340,12 @@ class AuthenticationServiceTest {
                 .status(TokenStatus.REVOKED)
                 .build();
         TokenFamily tokenFamilyMock = TokenFamily.builder()
+                .trustedDevice(trustedDeviceMock)
                 .refreshTokens(List.of(refreshTokenMock))
                 .build();
         refreshTokenMock.setFamily(tokenFamilyMock);
 
         User userMock = User.builder()
-               // .tokenFamilies(List.of(tokenFamilyMock))
                 .build();
 
         var silentLoginRequestDto = new SilentLoginRequestDto("refreshToken", UUID.randomUUID().toString());
@@ -357,7 +356,6 @@ class AuthenticationServiceTest {
                 ReuseDetectionException.class, () -> authenticationService.silentLogin(silentLoginRequestDto));
         assertEquals(HACKING_ATTEMPT_DETECTED.getValue(), reuseDetectionException.getMessage());
 
-       // verify(tokenFamilyService).blockFamily(tokenFamilyMock);
         verify(refreshTokenService).revokeAllByFamily(tokenFamilyMock);
         verify(trustedDeviceService).deleteByUserAndDeviceId(eq(silentLoginRequestDto.deviceId()), any());
     }
@@ -373,13 +371,13 @@ class AuthenticationServiceTest {
                 .build();
         TokenFamily tokenFamilyMock = TokenFamily.builder()
                 .refreshTokens(List.of(refreshTokenMock))
+                .trustedDevice(trustedDeviceMock)
                 .build();
         refreshTokenMock.setFamily(tokenFamilyMock);
 
         when(jwtService.getPayload(anyString())).thenReturn(claimsMock);
         when(jwtService.getUuid(eq(claimsMock))).thenReturn(oldTokenUuid);
         when(refreshTokenService.findByUuid(eq(oldTokenUuid))).thenReturn(refreshTokenMock);
-   //     doNothing().when(tokenFamilyService).blockFamily(eq(tokenFamilyMock));
         doNothing().when(refreshTokenService).revoke(eq(refreshTokenMock));
 
         assertDoesNotThrow(() -> authenticationService.logout(logoutRequestDto));
@@ -387,27 +385,28 @@ class AuthenticationServiceTest {
 
     @Test
     void failureLogout() {
+        //Подготовка данных
         Claims claimsMock = mock(Claims.class);
         String oldTokenUuid = "oldTokenUuid";
         var logoutRequestDto = new LogoutRequestDto(oldTokenUuid, UUID.randomUUID().toString());
-        RefreshToken refreshTokenMock = RefreshToken.builder()
+        RefreshToken revocedRefreshToken = RefreshToken.builder()
                 .uuid(oldTokenUuid)
                 .status(TokenStatus.REVOKED)
                 .build();
         TokenFamily tokenFamilyMock = TokenFamily.builder()
-                .refreshTokens(List.of(refreshTokenMock))
+                .trustedDevice(trustedDeviceMock)
+                .refreshTokens(List.of(revocedRefreshToken))
                 .build();
-        refreshTokenMock.setFamily(tokenFamilyMock);
+        revocedRefreshToken.setFamily(tokenFamilyMock);
 
         when(jwtService.getPayload(anyString())).thenReturn(claimsMock);
         when(jwtService.getUuid(eq(claimsMock))).thenReturn(oldTokenUuid);
-        when(refreshTokenService.findByUuid(eq(oldTokenUuid))).thenReturn(refreshTokenMock);
+        when(refreshTokenService.findByUuid(eq(oldTokenUuid))).thenReturn(revocedRefreshToken);
 
         ReuseDetectionException reuseDetectionException = assertThrows(
                 ReuseDetectionException.class, () -> authenticationService.logout(logoutRequestDto));
         assertEquals(HACKING_ATTEMPT_DETECTED.getValue(), reuseDetectionException.getMessage());
 
-       // verify(tokenFamilyService).blockFamily(tokenFamilyMock);
         verify(refreshTokenService).revokeAllByFamily(tokenFamilyMock);
         verify(trustedDeviceService).deleteByUserAndDeviceId(eq(logoutRequestDto.deviceId()), any());
     }

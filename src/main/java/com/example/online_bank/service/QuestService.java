@@ -31,7 +31,7 @@ import static java.util.stream.Collectors.toMap;
 @RequiredArgsConstructor
 public class QuestService {
     private final QuestRepository questRepository;
-    private final Random random = new Random();
+    private final Random random;
     private final UserRepository userRepository;
     private final UserQuestRepository userQuestRepository;
     private final QuestMapper questMapper;
@@ -102,6 +102,11 @@ public class QuestService {
         ).toList();
     }
 
+    public List<Quest> findAllAvailable(LocalDate now) {
+        //find all Quest where now before now.последнийДень
+        return questRepository.findAllByDateOfExpiryIsAfter(now);
+    }
+
     private BigDecimal generateRandomPoint() {
         return BigDecimal.valueOf(random.nextInt(1, 11) * 50L);
     }
@@ -125,11 +130,6 @@ public class QuestService {
 
     private String generateQuestName(Quest quest) {
         return "Квест № %s".formatted(quest.getId());
-    }
-
-    public List<Quest> findAllAvailable(LocalDate now) {
-        //find all Quest where now before now.последнийДень
-        return questRepository.findAllByDateOfExpiryIsAfter(now);
     }
 
     private LocalDate createExpDate() {

@@ -57,7 +57,7 @@ jwt:
   refresh-token-lifetime: 30d
   id-token-lifetime: 30d
   not-before: 10s
-  filename: JWT_SECRET_FILE_NAME
+  filename: jwt_secret_file_name
   audience: "online_bank audience"
   issuer: "com.example"
 

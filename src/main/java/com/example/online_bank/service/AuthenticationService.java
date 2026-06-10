@@ -25,7 +25,6 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 
 import static com.example.online_bank.enums.AuthenticationResponseKey.*;
-import static com.example.online_bank.enums.CodeType.EMAIL_AUTHENTICATION;
 import static com.example.online_bank.enums.CodeType.EMAIL_VERIFICATION;
 import static com.example.online_bank.enums.SecurityMessage.CONFIRM_LOGIN_MESSAGE;
 import static com.example.online_bank.enums.SecurityMessage.HACKING_ATTEMPT_DETECTED;
@@ -84,11 +83,11 @@ public class AuthenticationService {
 
     @Transactional
     public AuthenticationResponseDto defaultVerification(VerificationRequestDto verificationRequestDto) {
-        // 2. Верифицируем otp и пользователя
+        // 1. Верифицируем otp и пользователя
         VerificationResponseDto verificationResponseDto = verificationManager.verifyUserByEmail(
                 verificationRequestDto.verificationCode(),
                 verificationRequestDto.email(),
-                EMAIL_AUTHENTICATION
+                EMAIL_VERIFICATION
         );
         log.info("Начало проверки device challenge");
         deviceChallengeService.existsByParameters(
@@ -181,7 +180,6 @@ public class AuthenticationService {
 
     @Transactional
     public void logout(LogoutRequestDto dto) {
-        log.info("Выход из 'сессии'");
         //1. Парсим токен
         RefreshToken refreshTokenEntity = getRefreshTokenAndHandleRevoke(dto.refreshToken(), dto.deviceId());
         //  tokenFamilyService.blockFamily(family);
@@ -236,7 +234,6 @@ public class AuthenticationService {
     ) {
         if (refreshToken.getStatus().equals(REVOKED)) {
             log.warn("Reuse detected");
-            //tokenFamilyService.blockFamily(family);
             refreshTokenService.revokeAllByFamily(family);
             trustedDeviceService.deleteByUserAndDeviceId(deviceId, user);
             throw new ReuseDetectionException(HACKING_ATTEMPT_DETECTED.getValue());

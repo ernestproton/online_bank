@@ -34,9 +34,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     List<User> findAllIsVerified();
 
     @Modifying
-    @Query(nativeQuery = true, value = """
-            truncate table user_bank cascade;
-            """)
+    @Query(nativeQuery = true, value = "truncate table user_bank cascade")
     @Transactional
     void deleteAllCascade();
 }

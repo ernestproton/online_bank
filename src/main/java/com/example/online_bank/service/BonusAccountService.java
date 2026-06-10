@@ -66,6 +66,7 @@ public class BonusAccountService {
 
     @Transactional
     public void depositBonus(String accountNumber, BigDecimal points) {
+        //todo сделать проверку на отрицательное число
         BonusAccount bonusAccount = findBonusAccountByAccountNumber(accountNumber);
         bonusAccount.setPoints(bonusAccount.getPoints().add(points));
 

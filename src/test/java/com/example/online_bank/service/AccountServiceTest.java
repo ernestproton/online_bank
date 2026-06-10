@@ -19,6 +19,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -162,7 +163,7 @@ class AccountServiceTest {
     @Test
     void failFindAllByHolder() {
         String uuid = "11111111-1111-1111-1111-111111111111";
-        assertThrows(EmptyDataException.class, () -> accountService.findAllByHolder(UUID.fromString(uuid)));
+        Assertions.assertEquals(Collections.EMPTY_LIST, accountService.findAllByHolder(UUID.fromString(uuid)));
     }
 
     @Test

@@ -19,6 +19,7 @@ import static jakarta.persistence.GenerationType.IDENTITY;
 @Getter
 @Setter
 @Builder
+@ToString
 public class Quest {
     @Id
     @GeneratedValue(strategy = IDENTITY)

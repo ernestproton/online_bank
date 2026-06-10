@@ -11,7 +11,7 @@ class SecretKeyWriterTest {
     @Test
     void successWriteKeyToFile() throws IOException {
         String filename = "src/test/resources/testsecretfile.txt";
-        String content = "testcontent";
+        String content = "test-content";
 
         try (FileWriter fw = new FileWriter(filename)) {
             Assertions.assertDoesNotThrow(() -> SecretKeyWriter.writeKeyToFile(fw, content));

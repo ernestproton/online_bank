@@ -50,7 +50,7 @@ public class PayBankPartnerService {
                 payDtoRequest.senderInfo().accountNumberFrom(),
                 payDtoRequest.serviceRequestAmount(),
                 createDescription(payDtoRequest.serviceInfo().partnerName()),
-                bankPartnerService.findAccountCurrencyCode(payDtoRequest.serviceInfo().partnerName())
+                bankPartnerService.findAccountCurrencyCodeByName(payDtoRequest.serviceInfo().partnerName())
         );
     }
 
@@ -59,7 +59,7 @@ public class PayBankPartnerService {
                 bankPartnerService.findAccountNumber(payDtoRequest.serviceInfo().partnerName()),
                 payDtoRequest.serviceRequestAmount(),
                 createDescription(payDtoRequest.serviceInfo().partnerName()),
-                bankPartnerService.findAccountCurrencyCode(payDtoRequest.serviceInfo().partnerName())
+                bankPartnerService.findAccountCurrencyCodeByName(payDtoRequest.serviceInfo().partnerName())
         );
     }
 

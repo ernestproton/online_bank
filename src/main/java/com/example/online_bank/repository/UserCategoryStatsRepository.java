@@ -21,4 +21,6 @@ public interface UserCategoryStatsRepository extends JpaRepository<UserCategoryS
     );
 
     List<UserCategoryStats> findAllByUser(User user);
+
+    User user(User user);
 }

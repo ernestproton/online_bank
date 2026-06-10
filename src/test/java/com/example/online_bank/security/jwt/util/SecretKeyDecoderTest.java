@@ -1,17 +1,26 @@
 package com.example.online_bank.security.jwt.util;
 
-import com.example.online_bank.security.jwt.service.SecretKeyManager;
-import lombok.RequiredArgsConstructor;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-@SpringBootTest
-@RequiredArgsConstructor
+import java.io.FileReader;
+import java.io.IOException;
+
+@ExtendWith(MockitoExtension.class)
 class SecretKeyDecoderTest {
-    private final SecretKeyManager secretKeyManager;
+    
+    private static final String PATH = "jwt_secret_file_name";
 
-//    @Test
-//    void decode() {
-//        SecretKey secretKey = secretKeyManager.createSecretKey();
-//        secretKeyManager.encodeAndWriteKey();
-//    }
+    @Test
+    void decode() throws IOException {
+        FileReader fileReader = new FileReader(PATH);
+        String key = SecretKeyReader.readKeyFromFile(fileReader);
+        SecretKeyDecoder.decode(key);
+        Assertions.assertDoesNotThrow(() -> SecretKeyDecoder.decode(key));
+        fileReader.close();
+
+
+    }
 }

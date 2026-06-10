@@ -30,7 +30,7 @@ public class UserCategoryStatsService {
         YearMonth yearMonth = YearMonth.of(event.operationDate().getYear(), event.operationDate().getMonthValue());
         LocalDate startDate = LocalDate.of(event.operationDate().getYear(), month, 1);
         LocalDate endDate = LocalDate.of(event.operationDate().getYear(), month, yearMonth.lengthOfMonth());
-        log.info("Категория от ивента - {}",event.partnerCategory().toString());
+        log.debug("Категория от ивента - {}",event.partnerCategory().toString());
         //1. ищем пользовательскую статистику между началом и концом месяца из переданного события
         UserCategoryStats userCategoryStats = userCategoryStatsRepository
                 .findByUser_UuidAndCategoryAndLastSpendDateBetween(
@@ -44,12 +44,12 @@ public class UserCategoryStatsService {
                     return create(event);
                 }
         );
-        log.info("Категория от статистики {}", userCategoryStats.getCategory());
+        log.trace("Категория от статистики {}", userCategoryStats.getCategory());
         //3. увеличиваем общую потраченную сумму
-        log.info("Пользователь потратил в событие - {}", event.spendAmount());
-        log.info("Потрачено в статистике - {}", userCategoryStats.getTotalSpend());
+        log.trace("Пользователь потратил в событие - {}", event.spendAmount());
+        log.trace("Потрачено в статистике - {}", userCategoryStats.getTotalSpend());
         userCategoryStats.setTotalSpend(userCategoryStats.getTotalSpend().add(event.spendAmount()));
-        log.info("Пользователь потратил после обновления данных - {}", userCategoryStats.getTotalSpend());
+        log.debug("Пользователь потратил после обновления данных - {}", userCategoryStats.getTotalSpend());
         //4. увеличиваем количество трат в этом месяце по категории
         userCategoryStats.setCountSpendInMonth(userCategoryStats.getCountSpendInMonth() + 1);
         //5. изменяем последнюю дату траты

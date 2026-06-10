@@ -25,6 +25,7 @@ public class BankPartnerService {
     private final AccountRepository accountRepository;
     private final BankPartnerRepository bankPartnerRepository;
 
+    //fixme используется хардкод в коде
     @Transactional
     public void create(String name, PartnerCategory category) {
         Account partnerAccount = Account.builder()
@@ -46,7 +47,7 @@ public class BankPartnerService {
         accountRepository.save(partnerAccount);
     }
 
-    public CurrencyCode findAccountCurrencyCode(String partnerName) {
+    public CurrencyCode findAccountCurrencyCodeByName(String partnerName) {
         return bankPartnerRepository.findCurrencyCodeByPartnerName(partnerName)
                 .orElseThrow(() -> new EntityNotFoundException(PARTNER_NOT_FOUND_MSG));
     }

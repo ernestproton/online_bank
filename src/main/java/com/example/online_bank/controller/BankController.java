@@ -25,7 +25,7 @@
     @RequestMapping("/api/operation")
     @RequiredArgsConstructor
     @Tag(name = "Контроллер финансовых операций")
-    public class BankController {
+    public class    BankController {
         private final BankService bankService;
         private final BuyCurrencyService buyCurrencyService;
 

@@ -34,7 +34,7 @@ public class SecretKeyManager {
      * <p>
      * 2) записываем строку в указанный файл
      */
-    public void encodeAndWriteKey(FileWriter writer, SecretKey secretKey) {
+    public void encodeAndWriteKey(FileWriter writer, SecretKey secretKey) throws IOException {
         String encoded = encode(secretKey);
         writeKeyToFile(writer, encoded);
     }

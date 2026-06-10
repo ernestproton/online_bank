@@ -12,7 +12,7 @@ class SecretKeyReaderTest {
     @SneakyThrows
     void successReadKeyFromFile() {
         String filename = "src/test/resources/testsecretfile.txt";
-        String exceptedContent = "testcontent";
+        String exceptedContent = "test-content";
         try (FileReader fr = new FileReader(filename)) {
             String result = SecretKeyReader.readKeyFromFile(fr);
             Assertions.assertEquals(exceptedContent, result);

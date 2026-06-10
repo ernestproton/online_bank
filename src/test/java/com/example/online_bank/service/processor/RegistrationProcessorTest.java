@@ -4,6 +4,9 @@ import com.example.online_bank.domain.dto.RegistrationDtoRequest;
 import com.example.online_bank.domain.entity.User;
 import com.example.online_bank.domain.entity.VerificationCode;
 import com.example.online_bank.domain.event.SendVerificationCodeEvent;
+import com.example.online_bank.enums.BodyMessage;
+import com.example.online_bank.enums.CodeType;
+import com.example.online_bank.enums.SubjectMessage;
 import com.example.online_bank.exception.EntityAlreadyExistsException;
 import com.example.online_bank.mapper.UserMapper;
 import com.example.online_bank.service.RoleService;
@@ -69,7 +72,7 @@ class RegistrationProcessorTest {
                 .codeType(EMAIL_VERIFICATION)
                 .build();
 
-        SendVerificationCodeEvent expectedResult = new SendVerificationCodeEvent(request.email(), "1234", VERIFICATION.getValue(), VERIFICATION_BODY.getValue());
+        var expectedResult = new SendVerificationCodeEvent(request.email(), "1234", VERIFICATION.getValue(), VERIFICATION_BODY.getValue());
 
         //обучение моков
         when(userService.existsByPhoneNumber(request.phone())).thenReturn(false);
@@ -77,10 +80,11 @@ class RegistrationProcessorTest {
         when(userMapper.toUser(eq(request), any(), any())).thenReturn(userMock);
         when(verificationCodeService.create(
                 eq(userMock),
-                eq(EMAIL_VERIFICATION),
-                eq(VERIFICATION),
-                eq(VERIFICATION_BODY),
-                false)).thenReturn(verificationCodeMock);
+                eq(CodeType.EMAIL_VERIFICATION),
+                eq(SubjectMessage.VERIFICATION),
+                eq(BodyMessage.VERIFICATION_BODY),
+                eq(false)))
+                .thenReturn(verificationCodeMock);
 
         //act действие
         SendVerificationCodeEvent actualResult = registrationProcessor.register(request, userMapper::toUser);
@@ -126,7 +130,7 @@ class RegistrationProcessorTest {
                 eq(EMAIL_VERIFICATION),
                 eq(VERIFICATION),
                 eq(VERIFICATION_BODY),
-                false)).thenReturn(verificationCodeMock);
+                eq(false))).thenReturn(verificationCodeMock);
         //act действие
         SendVerificationCodeEvent actualResult = registrationProcessor.register(request, userMapper::toAdmin);
         log.info("result {}", actualResult);

@@ -31,7 +31,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @RequiredArgsConstructor
 @ContextConfiguration(classes = OnlineBankApplication.class)
-@SpringBootTest(classes = OnlineBankApplication.class)
+@SpringBootTest(classes = OnlineBankApplication.class, webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @Slf4j
 class VerificationCodeServiceTestIT {
     @Autowired
