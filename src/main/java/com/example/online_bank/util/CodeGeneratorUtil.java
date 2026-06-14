@@ -18,7 +18,7 @@ public class CodeGeneratorUtil {
      * @example было: "000001"
      * стало: "810000001"
      */
-    public String generateAccountNumber(CurrencyCode currencyCode) {
+    public static String generateAccountNumber(CurrencyCode currencyCode) {
         return String.format(currencyCode.getCode() + "%06d", RANDOM.nextInt(ACCOUNT_NUMBER_FORMAT));
     }
 
@@ -26,14 +26,14 @@ public class CodeGeneratorUtil {
      * Устаревший метод генерации номера счета.
      */
     @Deprecated
-    public String generateAccountNumber() {
+    public static String generateAccountNumber() {
         return String.format("%06d", RANDOM.nextInt(ACCOUNT_NUMBER_FORMAT));
     }
 
     /**
      * Генерация otp кода из 4 цифр
      */
-    public String generateVerificationCode() {
+    public static String generateVerificationCode() {
         return String.format("%04d", RANDOM.nextInt(OTP_FORMAT));
     }
 }

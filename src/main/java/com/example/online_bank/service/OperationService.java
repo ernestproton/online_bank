@@ -114,4 +114,8 @@ public class OperationService {
     private PageRequest createPageRequest(int page, int size) {
         return PageRequest.of(page, size, Sort.by(DESC, "createdAt"));
     }
+
+    public Operation findById(Long id) {
+        return operationRepository.findById(id).orElseThrow(EntityNotFoundException::new);
+    }
 }
