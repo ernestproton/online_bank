@@ -28,7 +28,7 @@ public class PDFWriterService {
     private final UserService userService;
     private final OperationService operationService;
 
-    private static final String REGULAR_FONT_PATH = "src/main/resources/Roboto-Regular.ttf";
+    private static final String REGULAR_FONT_PATH = "Roboto-Regular.ttf";
     private static final String BANK_NAME = "Online Bank";
 
     @SneakyThrows
